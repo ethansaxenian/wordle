@@ -93,7 +93,7 @@ export default function App() {
 				flexDirection: 'column',
 				alignItems: 'center',
 				width: "100%",
-				height: "100%"
+				height: "100vh"
 			}}
 			onKeyDown={handleKeyDown}
 			tabIndex={0}
@@ -102,13 +102,13 @@ export default function App() {
 			<Grid handleKeyDown={handleKeyDown} attempts={attempts} completedRows={completedRows} word={word}/>
 			{win && (
 				<>
-					<h1>YOU WIN!!!!</h1>
+					<h1>YOU WIN!!!! - the word was {word}</h1>
 					<button onClick={getNewWord}>Get new word</button>
 				</>
 			)}
 			{!win && completedRows === 6 && (
 				<>
-					<h1>YOU LOSE</h1>
+					<h1>YOU LOSE - the word was {word}</h1>
 					<button onClick={getNewWord}>Get new word</button>
 				</>
 			)}

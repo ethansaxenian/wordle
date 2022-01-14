@@ -8,10 +8,10 @@ export default function Grid({ attempts, completedRows, word}) {
 				<span style={{display: 'flex'}} key={`row-${i}`}>
 					{range(0, 5).map((j) => {
 						const val = attempts[i].word[j];
-						let color = "lightgray";
+						let color = "gray";
 						if (val) {
 							if (word.includes(val)) {
-								color = "yellow";
+								color = "#E3BF00";
 							}
 							if (word[j] === val) {
 								color = "green";
@@ -19,7 +19,7 @@ export default function Grid({ attempts, completedRows, word}) {
 						}
 						return (
 							<span key={`col-${j}`} style={{padding: 5}}>
-								<Square val={i < completedRows ? undefined : val} complete={i < completedRows} color={color}/>
+								<Square val={val} complete={i < completedRows} color={color}/>
 							</span>
 						)
 					})}

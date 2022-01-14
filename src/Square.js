@@ -10,10 +10,12 @@ export default function Square({ val, complete, color }) {
 				justifyContent: 'center',
 				alignItems: 'center',
 				fontSize: 40,
-				backgroundColor: complete ? color : "white"
+				backgroundColor: complete ? color : "white",
+				color: complete ? "white" : "black",
+				fontWeight: "bolder"
 			}}
 		>
-			{val}
+			{val ? val.toUpperCase() : val}
 		</span>
 	)
 }
