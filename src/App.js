@@ -1,22 +1,31 @@
 import logo from './logo.svg';
 import './App.css';
+import { useState, useEffect } from "react";
 
 function App() {
+	const [word, setWord] = useState("");
+
+	useEffect(() => {
+		const getWord = async () => {
+			const response = await fetch("https://random-word-api.herokuapp.com/all");
+			if (!response.ok) {
+				throw new Error(response.statusText);
+			}
+			const allWords = await response.json();
+			const fiveLetterWords = allWords.filter((word) => word.length === 5);
+			const randomWord = fiveLetterWords[Math.floor(Math.random() * fiveLetterWords.length)];
+			setWord(randomWord);
+		}
+		getWord();
+	}, []);
+
   return (
     <div className="App">
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>
-          Edit <code>src/App.js</code> and save to reload.
+          the word is {word}
         </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
       </header>
     </div>
   );
