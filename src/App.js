@@ -74,7 +74,9 @@ export default function App() {
 				}
 			} else if (key === "enter") {
 				if (currAttempt.length === 5) {
-					setCompletedRows(completedRows + 1);
+					if (allWords.has(currAttempt.join(""))) {
+						setCompletedRows(completedRows + 1);
+					}
 				}
 			}
 		}
@@ -111,6 +113,9 @@ export default function App() {
 					<h1>YOU LOSE - the word was {word}</h1>
 					<button onClick={getNewWord}>Get new word</button>
 				</>
+			)}
+			{(!win && completedRows < 6) && (
+				<button style={{marginTop: 25}} onClick={() => setCompletedRows(6)}>Give Up</button>
 			)}
     </div>
   );
