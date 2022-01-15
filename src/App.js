@@ -3,10 +3,11 @@ import { ToastContainer } from "react-toastify";
 import Grid from "./Grid";
 import Keyboard from "./Keyboard";
 import { addLetter, ALPHABET, deleteLetter, sample, showToast } from "./utils";
+import words from "./words.json";
 
 export default function App() {
-	const [allWords, setAllWords] = useState();
-	const [word, setWord] = useState("");
+	const [allWords] = useState(new Set(words));
+	const [word, setWord] = useState(sample(Array.from(words)));
 	const [row, setRow] = useState(0);
 	const [r0, setR0] = useState([]);
 	const [r1, setR1] = useState([]);
@@ -19,41 +20,17 @@ export default function App() {
 	const [history, setHistory] = useState([]);
 
 	useEffect(() => {
-		const getWord = async () => {
-			const response = await fetch("https://random-word-api.herokuapp.com/all");
-			if (!response.ok) {
-				throw new Error(response.statusText);
-			}
-			const fetchedWords = await response.json();
-			const fiveLetterWords = fetchedWords.filter((word) => word.length === 5);
-			setAllWords(new Set(fiveLetterWords));
-			setWord(sample(fiveLetterWords));
-		}
-		getWord();
-	}, []);
-
-	useEffect(() => {
-		let isWin = false;  // prevent toast from displaying while waiting for win state change
-		if (word) {
-			[r0, r1, r2, r3, r4, r5].forEach((w) => {
-				if (w.join("") === word) {
-					isWin = true;
-				}
-			});
-		}
 		if (completedRows > 0 && completedRows < 6) {
 			setRow(row + 1);
 		} else if (completedRows === -1) {
-			setCompletedRows(0);
 			setWord(sample(Array.from(allWords)));
-		} else if (completedRows === 6 && !isWin) {
+		} else if (completedRows === 6 && !win) {
 			showToast(<span>The word was <span style={{color: "red"}}>{word}</span></span>);
 		}
-
-		setWin(isWin);
 	}, [completedRows]);
 
 	useEffect(() => {
+		setCompletedRows(0);
 		setRow(0);
 		[setR0, setR1, setR2, setR3, setR4, setR5].forEach((fn) => { fn([]) });
 		setWin(false);
@@ -84,8 +61,11 @@ export default function App() {
 			} else if (key === "enter") {
 				if (currAttempt.length === 5) {
 					if (allWords.has(currAttempt.join(""))) {
-						setCompletedRows(completedRows + 1);
 						setHistory([...history, ...currAttempt]);
+						setCompletedRows(completedRows + 1);
+						if (currAttempt.join("") === word) {
+							setWin(true);
+						}
 					} else {
 						showToast("Not a valid 5-letter word!", "error");
 					}
@@ -99,7 +79,10 @@ export default function App() {
   return (
 		<div
 			style={{width: "100%", height: "100%"}}
-			onKeyDown={(e) => handleKeyDown(e.key.toLowerCase())}
+			onKeyDown={(e) => {
+				e.preventDefault();
+				handleKeyDown(e.key.toLowerCase());
+			}}
 			tabIndex={0}
 		>
 			<ToastContainer/>
