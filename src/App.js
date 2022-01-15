@@ -107,7 +107,7 @@ export default function App() {
 			>
 				<h1>WORDLE</h1>
 				{win && (
-					<button onClick={() => setCompletedRows(-1)} style={{margin: 10}}>Get new word</button>
+					<button onClick={() => setCompletedRows(-1)} style={{marginBottom: 10}}>Get new word</button>
 				)}
 				{(!win && completedRows < 6) && (
 					<button style={{marginBottom: 10}} onClick={() => setCompletedRows(6)}>Give Up</button>
