@@ -115,9 +115,11 @@ export default function App() {
 				}}
 			>
 				<h1>WORDLE</h1>
-				<button style={{marginBottom: 10}} onClick={() => setCompletedRows((!win && completedRows < 6) ? 6 : -1)}>
-					{(!win && completedRows < 6) ? "Give Up" : "Get new Word"}
-				</button>
+				{word !== "" && (
+					<button style={{marginBottom: 10}} onClick={() => setCompletedRows((!win && completedRows < 6) ? 6 : -1)}>
+						{(!win && completedRows < 6) ? "Give Up" : "Get new Word"}
+					</button>
+				)}
 				<Grid attempts={attempts} completedRows={completedRows} word={word}/>
 				<span style={{padding: 15}}>
 					<Keyboard handleKeyDown={handleKeyDown} history={history} word={word}/>
