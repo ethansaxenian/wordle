@@ -87,39 +87,42 @@ export default function App() {
 		}
 	}
 
-	console.log(history)
-
   return (
-    <div
-			style={{
-				display: 'flex',
-				justifyContent: 'center',
-				flexDirection: 'column',
-				alignItems: 'center',
-				width: "100%",
-				height: "100%",
-				overflow: "scroll"
-			}}
+		<div
+			style={{width: "100%", height: "100%"}}
 			onKeyDown={(e) => handleKeyDown(e.key.toLowerCase())}
 			tabIndex={0}
 		>
-			<h1 style={{padding: 25}}>WORDLE</h1>
-			<Grid attempts={attempts} completedRows={completedRows} word={word}/>
-			{win && (
-				<button onClick={() => setCompletedRows(-1)} style={{marginTop: 25}}>Get new word</button>
-			)}
-			{(!win && completedRows < 6) && (
-				<button style={{marginTop: 25}} onClick={() => setCompletedRows(6)}>Give Up</button>
-			)}
-			{!win && completedRows === 6 && (
-				<>
-					<h1 style={{padding: 15}}>YOU LOSE - the word was <span style={{color: "red"}}>{word}</span></h1>
-					<button onClick={() => setCompletedRows(-1)}>Get new word</button>
-				</>
-			)}
-			<span style={{marginTop: 30}}>
-				<Keyboard handleKeyDown={handleKeyDown} history={history} word={word}/>
-			</span>
-    </div>
+			<div
+				style={{
+					display: 'flex',
+					justifyContent: 'center',
+					flexDirection: 'column',
+					alignItems: 'center',
+					width: "max-content",
+					margin: "auto",
+					height: "100%",
+					overflow: "scroll"
+				}}
+			>
+				<h1>WORDLE</h1>
+				{win && (
+					<button onClick={() => setCompletedRows(-1)} style={{margin: 10}}>Get new word</button>
+				)}
+				{(!win && completedRows < 6) && (
+					<button style={{marginBottom: 10}} onClick={() => setCompletedRows(6)}>Give Up</button>
+				)}
+				{!win && completedRows === 6 && (
+					<>
+						<p>the word was <span style={{color: "red"}}>{word}</span></p>
+						<button style={{margin: 10}} onClick={() => setCompletedRows(-1)}>Get new word</button>
+					</>
+				)}
+				<Grid attempts={attempts} completedRows={completedRows} word={word}/>
+				<span style={{padding: 15}}>
+					<Keyboard handleKeyDown={handleKeyDown} history={history} word={word}/>
+				</span>
+			</div>
+		</div>
   );
 }

@@ -2,7 +2,7 @@ export default function Key({ val, inWord, inHistory, handleKeyDown }) {
 	return (
 		<span
 			style={{
-				width: val.length === 1 ? 43 : "fit-content",
+				width: val.length === 1 ? "min(43px, 5vw)" : "fit-content",
 				height: 58,
 				padding: 15,
 				backgroundColor: (inWord && inHistory) ? "green" : (inHistory ? "gray" : "lightgray"),
