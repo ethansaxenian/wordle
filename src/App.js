@@ -33,23 +33,24 @@ export default function App() {
 	}, []);
 
 	useEffect(() => {
-		if (completedRows > 0 && completedRows < 6) {
-			setRow(row + 1);
-		}
+		let isWin = false;  // prevent toast from displaying while waiting for win state change
 		if (word) {
 			[r0, r1, r2, r3, r4, r5].forEach((w) => {
 				if (w.join("") === word) {
-					setWin(true);
+					isWin = true;
 				}
 			});
 		}
-		if (completedRows === -1) {
+		if (completedRows > 0 && completedRows < 6) {
+			setRow(row + 1);
+		} else if (completedRows === -1) {
 			setCompletedRows(0);
 			setWord(sample(Array.from(allWords)));
-		}
-		if (completedRows === 6 && !win) {
+		} else if (completedRows === 6 && !isWin) {
 			showToast(<span>The word was <span style={{color: "red"}}>{word}</span></span>);
 		}
+
+		setWin(isWin);
 	}, [completedRows]);
 
 	useEffect(() => {
