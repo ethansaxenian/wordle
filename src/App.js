@@ -1,5 +1,6 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect, Fragment } from "react";
 import Grid from "./Grid";
+import Keyboard from "./Keyboard";
 import { addLetter, ALPHABET, deleteLetter, sample } from "./utils";
 
 export default function App() {
@@ -14,6 +15,7 @@ export default function App() {
 	const [r5, setR5] = useState([]);
 	const [completedRows, setCompletedRows] = useState(0);
 	const [win, setWin] = useState(false);
+	const [history, setHistory] = useState([]);
 
 	useEffect(() => {
 		const getWord = async () => {
@@ -24,8 +26,7 @@ export default function App() {
 			const fetchedWords = await response.json();
 			const fiveLetterWords = fetchedWords.filter((word) => word.length === 5);
 			setAllWords(new Set(fiveLetterWords));
-			const randomWord = fiveLetterWords[Math.floor(Math.random() * fiveLetterWords.length)];
-			setWord(randomWord);
+			setWord(sample(fiveLetterWords));
 		}
 		getWord();
 	}, []);
@@ -41,13 +42,17 @@ export default function App() {
 				}
 			});
 		}
+		if (completedRows === -1) {
+			setCompletedRows(0);
+			setWord(sample(Array.from(allWords)));
+		}
 	}, [completedRows]);
 
 	useEffect(() => {
 		setRow(0);
-		setCompletedRows(0);
 		[setR0, setR1, setR2, setR3, setR4, setR5].forEach((fn) => { fn([]) });
 		setWin(false);
+		setHistory([]);
 	}, [word]);
 
 	const attempts = {
@@ -61,9 +66,8 @@ export default function App() {
 
 	const [currAttempt, setCurrAttempt] = [attempts[row].word, attempts[row].fn];
 
-	const handleKeyDown = (e) => {
+	const handleKeyDown = (key) => {
 		if (!win && completedRows < 6) {
-			const key = e.key.toLowerCase();
 			if (ALPHABET.includes(key)) {
 				if (currAttempt.length < 5) {
 					setCurrAttempt(addLetter(currAttempt, key));
@@ -76,16 +80,14 @@ export default function App() {
 				if (currAttempt.length === 5) {
 					if (allWords.has(currAttempt.join(""))) {
 						setCompletedRows(completedRows + 1);
+						setHistory([...history, ...currAttempt]);
 					}
 				}
 			}
 		}
 	}
 
-	const getNewWord = () => {
-		const newWord = sample(Array.from(allWords));
-		setWord(newWord);
-	}
+	console.log(history)
 
   return (
     <div
@@ -95,28 +97,29 @@ export default function App() {
 				flexDirection: 'column',
 				alignItems: 'center',
 				width: "100%",
-				height: "100vh"
+				height: "100%",
+				overflow: "scroll"
 			}}
-			onKeyDown={handleKeyDown}
+			onKeyDown={(e) => handleKeyDown(e.key.toLowerCase())}
 			tabIndex={0}
 		>
-			<h1 style={{paddingBottom: 50, paddingTop: 25}}>WORDLE</h1>
-			<Grid handleKeyDown={handleKeyDown} attempts={attempts} completedRows={completedRows} word={word}/>
+			<h1 style={{padding: 25}}>WORDLE</h1>
+			<Grid attempts={attempts} completedRows={completedRows} word={word}/>
 			{win && (
-				<>
-					<h1>YOU WIN!!!! - the word was {word}</h1>
-					<button onClick={getNewWord}>Get new word</button>
-				</>
-			)}
-			{!win && completedRows === 6 && (
-				<>
-					<h1>YOU LOSE - the word was {word}</h1>
-					<button onClick={getNewWord}>Get new word</button>
-				</>
+				<button onClick={() => setCompletedRows(-1)} style={{marginTop: 25}}>Get new word</button>
 			)}
 			{(!win && completedRows < 6) && (
 				<button style={{marginTop: 25}} onClick={() => setCompletedRows(6)}>Give Up</button>
 			)}
+			{!win && completedRows === 6 && (
+				<>
+					<h1 style={{padding: 15}}>YOU LOSE - the word was <span style={{color: "red"}}>{word}</span></h1>
+					<button onClick={() => setCompletedRows(-1)}>Get new word</button>
+				</>
+			)}
+			<span style={{marginTop: 30}}>
+				<Keyboard handleKeyDown={handleKeyDown} history={history} word={word}/>
+			</span>
     </div>
   );
 }
