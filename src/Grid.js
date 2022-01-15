@@ -9,23 +9,15 @@ export default function Grid({ attempts, completedRows, word}) {
 
 				return (
 					<span style={{display: 'flex'}} key={`row-${i}`}>
-						{range(0, 5).map((j) => {
-							const val = attempts[i].word[j];
-							let color = "gray";
-							if (val) {
-								if (word.includes(val) && leftovers.includes(val)) {
-									color = "#E3BF00";
-								}
-								if (word[j] === val) {
-									color = "green";
-								}
-							}
-							return (
-								<span key={`col-${j}`} style={{padding: 5}}>
-									<Square val={val} complete={i < completedRows} color={color}/>
-								</span>
-							);
-						})}
+						{range(0, 5).map((j) => (
+							<Square
+								key={`col-${j}`}
+								val={attempts[i].word[j]}
+								isLocked={i < completedRows}
+								isMisplaced={word.includes(attempts[i].word[j]) && leftovers.includes(attempts[i].word[j])}
+								isCorrect={word[j] === attempts[i].word[j]}
+							/>
+						))}
 					</span>
 				);
 			})}
