@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
+import { ToastContainer } from "react-toastify";
 import Grid from "./Grid";
 import Keyboard from "./Keyboard";
-import { addLetter, ALPHABET, deleteLetter, sample } from "./utils";
+import { addLetter, ALPHABET, deleteLetter, sample, showToast } from "./utils";
 
 export default function App() {
 	const [allWords, setAllWords] = useState();
@@ -46,6 +47,9 @@ export default function App() {
 			setCompletedRows(0);
 			setWord(sample(Array.from(allWords)));
 		}
+		if (completedRows === 6 && !win) {
+			showToast(<span>The word was <span style={{color: "red"}}>{word}</span></span>);
+		}
 	}, [completedRows]);
 
 	useEffect(() => {
@@ -72,7 +76,7 @@ export default function App() {
 				if (currAttempt.length < 5) {
 					setCurrAttempt(addLetter(currAttempt, key));
 				}
-			} else if (key === "backspace") {
+			} else if (key === "backspace" || key === "delete") {
 				if (currAttempt.length > 0) {
 					setCurrAttempt(deleteLetter(currAttempt));
 				}
@@ -81,7 +85,11 @@ export default function App() {
 					if (allWords.has(currAttempt.join(""))) {
 						setCompletedRows(completedRows + 1);
 						setHistory([...history, ...currAttempt]);
+					} else {
+						showToast("Not a valid 5-letter word!", "error");
 					}
+				} else {
+					showToast("Not enough letters!", "error");
 				}
 			}
 		}
@@ -93,6 +101,7 @@ export default function App() {
 			onKeyDown={(e) => handleKeyDown(e.key.toLowerCase())}
 			tabIndex={0}
 		>
+			<ToastContainer/>
 			<div
 				style={{
 					display: 'flex',
@@ -106,18 +115,9 @@ export default function App() {
 				}}
 			>
 				<h1>WORDLE</h1>
-				{win && (
-					<button onClick={() => setCompletedRows(-1)} style={{marginBottom: 10}}>Get new word</button>
-				)}
-				{(!win && completedRows < 6) && (
-					<button style={{marginBottom: 10}} onClick={() => setCompletedRows(6)}>Give Up</button>
-				)}
-				{!win && completedRows === 6 && (
-					<>
-						<p>the word was <span style={{color: "red"}}>{word}</span></p>
-						<button style={{margin: 10}} onClick={() => setCompletedRows(-1)}>Get new word</button>
-					</>
-				)}
+				<button style={{marginBottom: 10}} onClick={() => setCompletedRows((!win && completedRows < 6) ? 6 : -1)}>
+					{(!win && completedRows < 6) ? "Give Up" : "Get new Word"}
+				</button>
 				<Grid attempts={attempts} completedRows={completedRows} word={word}/>
 				<span style={{padding: 15}}>
 					<Keyboard handleKeyDown={handleKeyDown} history={history} word={word}/>
