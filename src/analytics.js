@@ -1,8 +1,8 @@
-import ReactGA from "react-ga4";
+import ReactGA from "react-ga";
 
 const analytics = () => {
 	ReactGA.initialize(process.env.REACT_APP_GA_ID);
-	ReactGA.send(process.env.REACT_APP_WEBSITE_URL);
+	ReactGA.send('https://ethansaxenian.github.io/wordle/');
 };
 
 export default analytics;
