@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { ToastContainer } from "react-toastify";
+import analytics from "./analytics";
 import Grid from "./Grid";
 import Keyboard from "./Keyboard";
 import { addLetter, ALPHABET, deleteLetter, sample, showToast } from "./utils";
@@ -18,6 +19,10 @@ export default function App() {
 	const [completedRows, setCompletedRows] = useState(0);
 	const [win, setWin] = useState(false);
 	const [history, setHistory] = useState([]);
+
+	useEffect(() => {
+		analytics();
+	}, []);
 
 	useEffect(() => {
 		if (completedRows > 0 && completedRows < 6) {
