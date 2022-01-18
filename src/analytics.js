@@ -1,9 +1,8 @@
-import ReactGA from "react-ga";
+import ReactGA from "react-ga4";
 
 const analytics = () => {
 	ReactGA.initialize(process.env.REACT_APP_GA_ID);
-	ReactGA.pageview(window.location.pathname + window.location.search);
-	console.log(window.location.pathname + window.location.search);
+	ReactGA.send(process.env.REACT_APP_WEBSITE_URL);
 };
 
 export default analytics;
