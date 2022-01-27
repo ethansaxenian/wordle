@@ -4,11 +4,13 @@ import analytics from "./analytics";
 import Grid from "./Grid";
 import Keyboard from "./Keyboard";
 import { addLetter, ALPHABET, deleteLetter, sample, showToast } from "./utils";
-import words from "./words.json";
+import answers from "./answers.json";
+import words from "./valid_words.json";
 
 export default function App() {
+	const [allAnswers] = useState(new Set(answers));
 	const [allWords] = useState(new Set(words));
-	const [word, setWord] = useState(sample(Array.from(words)));
+	const [word, setWord] = useState(sample(answers));
 	const [row, setRow] = useState(0);
 	const [r0, setR0] = useState([]);
 	const [r1, setR1] = useState([]);
@@ -28,7 +30,7 @@ export default function App() {
 		if (completedRows > 0 && completedRows < 6) {
 			setRow(row + 1);
 		} else if (completedRows === -1) {
-			setWord(sample(Array.from(allWords)));
+			setWord(sample(Array.from(allAnswers)));
 		} else if (completedRows === 6 && !win) {
 			showToast(<span>The word was <span style={{color: "red"}}>{word}</span></span>);
 		}
