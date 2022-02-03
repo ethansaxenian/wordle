@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { ToastContainer } from "react-toastify";
 import analytics from "./analytics";
 import Grid from "./Grid";
@@ -21,6 +21,12 @@ export default function App() {
 	const [completedRows, setCompletedRows] = useState(0);
 	const [win, setWin] = useState(false);
 	const [history, setHistory] = useState([]);
+
+	const inputRef = useRef(null);
+
+	useEffect(() => {
+		inputRef.current.focus();
+	}, [inputRef]);
 
 	useEffect(() => {
 		analytics();
@@ -85,12 +91,13 @@ export default function App() {
 
   return (
 		<div
-			style={{width: "100%", height: "100%"}}
+			style={{width: "100%", height: "100%", outline: "none"}}
 			onKeyDown={(e) => {
 				e.preventDefault();
 				handleKeyDown(e.key.toLowerCase());
 			}}
 			tabIndex={0}
+			ref={inputRef}
 		>
 			<ToastContainer/>
 			<div
